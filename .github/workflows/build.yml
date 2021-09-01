@@ -37,7 +37,7 @@ jobs:
       matrix:
         # server: [grpc, http]
         # server: [http-server, db]
-        server: [go-push]
+        server: [go-push, go-nodes]
     # if: github.ref == 'refs/heads/master'
     needs: build-base-golang-image
     runs-on: ubuntu-latest

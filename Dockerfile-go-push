@@ -1,4 +1,4 @@
-FROM pipelinr-clients-go:latest AS build
+FROM pipelinr-clients-go-base:latest AS build
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /go/bin/pusher ./v2/run/worker/pushwithtiming/push.go
 

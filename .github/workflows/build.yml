@@ -5,7 +5,7 @@ on: push
 
 
 jobs:
-  build-base-image:
+  build-base-golang-image:
     # if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
@@ -28,7 +28,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       -
-        name: Build base image
+        name: Build base golang image
         run: docker build -f ./Dockerfile-go-base -t ghcr.io/${{ github.repository_owner }}/pipelinr-clients-go-base:latest .
       - name: Push base image
         run: docker push ghcr.io/${{ github.repository_owner }}/pipelinr-clients-go-base:latest
@@ -39,7 +39,7 @@ jobs:
         # server: [http-server, db]
         server: [go-push]
     # if: github.ref == 'refs/heads/master'
-    needs: build-base-image
+    needs: build-base-golang-image
     runs-on: ubuntu-latest
     steps:
       -

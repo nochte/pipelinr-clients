@@ -7,7 +7,7 @@ WORKDIR /go/src
 COPY go/go.mod .
 COPY go/go.sum .
 RUN go mod download
-COPY . .
+COPY ./go .
 
 ENV USER=appuser
 ENV UID=10001 

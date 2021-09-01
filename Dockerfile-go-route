@@ -1,12 +1,12 @@
 FROM pipelinr-clients-go-base:latest AS build
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /go/bin/nodes ./v2/run/worker/nodes/nodes.go
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /go/bin/router ./v2/run/worker/router/route.go
 
 FROM scratch
 COPY --from=build /etc/passwd /etc/passwd
 COPY --from=build /etc/group /etc/group
-COPY --from=build /go/bin/nodes /go/bin/nodes
+COPY --from=build /go/bin/router /go/bin/router
 USER appuser:appuser
 EXPOSE 5005
 EXPOSE 8090
-ENTRYPOINT ["/go/bin/nodes"]
+ENTRYPOINT ["/go/bin/router"]

@@ -1,0 +1,12 @@
+FROM pipelinr-clients-go-base:latest AS build
+
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /go/bin/pusher ./v2/run/worker/pushwithtiming/push.go
+
+FROM scratch
+COPY --from=build /etc/passwd /etc/passwd
+COPY --from=build /etc/group /etc/group
+COPY --from=build /go/bin/pusher /go/bin/pusher
+USER appuser:appuser
+EXPOSE 5005
+EXPOSE 8090
+ENTRYPOINT ["/go/bin/pusher"]

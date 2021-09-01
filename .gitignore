@@ -13,3 +13,13 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+cover.html
+
+go/graph.txt
+
+graph-16k.txt
+
+local.env
+
+scratch

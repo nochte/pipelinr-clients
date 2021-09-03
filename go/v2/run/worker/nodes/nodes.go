@@ -44,10 +44,18 @@ func main() {
 }
 
 func startANode(name string) *worker.Worker {
-	w := worker.NewHTTPWorker(
-		os.Getenv("PIPELINR_URL"),
-		os.Getenv("PIPELINR_API_KEY"),
-		name)
+	var w *worker.Worker
+	if os.Getenv("GRPC") != "" {
+		w = worker.NewGRPCWorker(
+			os.Getenv("PIPELINR_GRPC_URL"),
+			os.Getenv("PIPELINR_API_KEY"),
+			name)
+	} else {
+		w = worker.NewHTTPWorker(
+			os.Getenv("PIPELINR_URL"),
+			os.Getenv("PIPELINR_API_KEY"),
+			name)
+	}
 
 	i := 0
 	w.OnMessage(func(msg *protomessages.Event) error {
@@ -56,9 +64,14 @@ func startANode(name string) *worker.Worker {
 			return w.Pipe().Log(msg.GetStringId(), 1, "decoration added")
 		}, 10, time.Millisecond*100)
 		return retry.Do(func() error {
-			return w.Pipe().Decorate(msg.GetStringId(), []*protopipes.Decoration{
+			er := w.Pipe().Decorate(msg.GetStringId(), []*protopipes.Decoration{
 				{Key: name, Value: fmt.Sprintf("%v", i)},
 			})
+			if er != nil {
+				log.Printf("DEBUG %v %v\n", name, msg.Id)
+				log.Printf("stringid %v\n", msg.GetStringId())
+			}
+			return er
 		}, 10, time.Millisecond*100)
 	})
 	w.RunNonBlocking()

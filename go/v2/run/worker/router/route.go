@@ -27,10 +27,18 @@ func main() {
 	}
 
 	for i := 0; i < 4; i++ {
-		router := worker.NewHTTPWorker(
-			os.Getenv("PIPELINR_URL"),
-			os.Getenv("PIPELINR_API_KEY"),
-			"route")
+		var router *worker.Worker
+		if os.Getenv("GRPC") != "" {
+			router = worker.NewGRPCWorker(
+				os.Getenv("PIPELINR_GRPC_URL"),
+				os.Getenv("PIPELINR_API_KEY"),
+				"route")
+		} else {
+			router = worker.NewHTTPWorker(
+				os.Getenv("PIPELINR_URL"),
+				os.Getenv("PIPELINR_API_KEY"),
+				"route")
+		}
 
 		router.OnMessage(func(msg *protomessages.Event) error {
 			// log.Printf("handling %v\n", msg.GetStringId())

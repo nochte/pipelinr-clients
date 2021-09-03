@@ -20,10 +20,18 @@ func main() {
 	out := make(chan string, 1000)
 
 	for i := 0; i < 20; i++ {
-		w := worker.NewHTTPWorker(
-			os.Getenv("PIPELINR_URL"),
-			os.Getenv("PIPELINR_API_KEY"),
-			"graph")
+		var w *worker.Worker
+		if os.Getenv("GRPC") != "" {
+			w = worker.NewGRPCWorker(
+				os.Getenv("PIPELINR_GRPC_URL"),
+				os.Getenv("PIPELINR_API_KEY"),
+				"graph")
+		} else {
+			w = worker.NewHTTPWorker(
+				os.Getenv("PIPELINR_URL"),
+				os.Getenv("PIPELINR_API_KEY"),
+				"graph")
+		}
 
 		w.OnMessage(func(msg *protomessages.Event) error {
 			// log.Printf("got a msg (%v): %v. %v\n", msg.GetStringId(), msg.GetMessage().GetRoute(), msg.GetMessage().GetRouteLog())

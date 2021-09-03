@@ -10,7 +10,10 @@ import (
 
 	protomessages "github.com/nochte/pipelinr-protocol/protobuf/messages"
 
-	pipes "github.com/nochte/pipelinr-clients/go/v2/pipe/http"
+	pipes "github.com/nochte/pipelinr-clients/go/v2/pipe"
+	grpcpipes "github.com/nochte/pipelinr-clients/go/v2/pipe/grpc"
+
+	// httppipes "github.com/nochte/pipelinr-clients/go/v2/pipe/http"
 	"github.com/nochte/pipelinr-lib/retry"
 )
 
@@ -26,9 +29,13 @@ func main() {
 	if threadstr != "" {
 		threads, _ = strconv.Atoi(threadstr)
 	}
-	url := os.Getenv("PIPELINR_URL")
 	apikey := os.Getenv("PIPELINR_API_KEY")
-	sender := pipes.New(url, "2", "route", apikey)
+	var sender pipes.Pipe
+	if os.Getenv("GRPC") != "" {
+		sender = grpcpipes.New(os.Getenv("PIPELINR_GRPC_URL"), "route", apikey)
+	} else {
+		// sender = httppipes.New(os.Getenv("PIPELINR_URL"), "2", "route", apikey)
+	}
 
 	wg := sync.WaitGroup{}
 	st := time.Now()

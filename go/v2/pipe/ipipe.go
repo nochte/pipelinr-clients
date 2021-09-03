@@ -25,7 +25,7 @@ type Pipe interface {
 	Send(*protomessages.MessageEnvelop) (string, error)
 
 	// Receiving
-	// Chan returns a chan of MessageEnvelops
+	// Chan returns a chan of Events
 	Chan() chan *protomessages.Event
 
 	// Modifying

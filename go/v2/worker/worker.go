@@ -7,6 +7,7 @@ import (
 	"time"
 
 	pipes "github.com/nochte/pipelinr-clients/go/v2/pipe"
+	grpcpipes "github.com/nochte/pipelinr-clients/go/v2/pipe/grpc"
 	httppipes "github.com/nochte/pipelinr-clients/go/v2/pipe/http"
 	protomessages "github.com/nochte/pipelinr-protocol/protobuf/messages"
 	protopipes "github.com/nochte/pipelinr-protocol/protobuf/pipes"
@@ -29,6 +30,18 @@ func NewHTTPWorker(url, apikey, step string) *Worker {
 		url = "https://pipelinr.dev"
 	}
 	p := httppipes.New(url, "2", step, apikey)
+	return new(p, step)
+}
+
+func NewGRPCWorker(url, apikey, step string) *Worker {
+	if url == "" {
+		url = "pipelinr.dev:5051"
+	}
+	p := grpcpipes.New(url, step, apikey)
+	return new(p, step)
+}
+
+func new(p pipes.Pipe, step string) *Worker {
 	p.SetReceiveOptions(&protopipes.ReceiveOptions{
 		AutoAck:           false,
 		Block:             false,
@@ -43,6 +56,7 @@ func NewHTTPWorker(url, apikey, step string) *Worker {
 		onMessage: make([]func(*protomessages.Event) error, 0),
 		onError:   make([]func(*protomessages.Event, error), 0),
 	}
+
 }
 
 // Pipe returns the worker's pipe

@@ -9,10 +9,13 @@ import (
 	"sync"
 	"time"
 
+	pipes "github.com/nochte/pipelinr-clients/go/v2/pipe"
+
 	"github.com/nochte/pipelinr-lib/retry"
 	protomessages "github.com/nochte/pipelinr-protocol/protobuf/messages"
 
-	pipes "github.com/nochte/pipelinr-clients/go/v2/pipe/http"
+	grpcpipes "github.com/nochte/pipelinr-clients/go/v2/pipe/grpc"
+	httppipes "github.com/nochte/pipelinr-clients/go/v2/pipe/http"
 )
 
 func main() {
@@ -33,10 +36,15 @@ func main() {
 
 	wg := sync.WaitGroup{}
 
-	numpipes := 250
+	numpipes := 500
 	outp := ring.New(numpipes)
 	for i := 0; i < numpipes; i++ {
-		outp.Value = pipes.New(url, "2", "route", apikey)
+		if os.Getenv("GRPC") != "" {
+			outp.Value = grpcpipes.New(os.Getenv("PIPELINR_GRPC_URL"), "route", apikey)
+		} else {
+			outp.Value = httppipes.New(url, "2", "route", apikey)
+		}
+
 		outp = outp.Next()
 	}
 
@@ -59,7 +67,7 @@ func main() {
 			wg.Add(1)
 			go func(m *protomessages.MessageEnvelop) {
 				retry.Do(func() error {
-					_, er := outp.Value.(*pipes.Pipe).Send(m)
+					_, er := outp.Value.(pipes.Pipe).Send(m)
 					outp = outp.Next()
 					return er
 				}, 100, time.Millisecond*50)

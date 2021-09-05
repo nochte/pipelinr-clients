@@ -3,7 +3,6 @@ package pipes
 import (
 	"context"
 	"errors"
-	"io"
 	"log"
 	"time"
 
@@ -73,33 +72,18 @@ func (p *Pipe) Start() error {
 	p.messages = make(chan *protomessages.Event, p.receiveoptions.Count)
 	// for loop
 	for p.running {
-		stream, er := p.client.StreamRecv(context.Background(), p.receiveoptions)
-		if er != nil {
-			log.Printf("error opening stream %v\n", er)
-			time.Sleep(time.Second)
-			continue
-		}
-		for {
-			elm, er := stream.Recv()
-			if er == io.EOF {
-				log.Printf("stream closed, reconnecting %v\n", er)
-				time.Sleep(time.Second)
-				break
+		retry.Do(func() error {
+			evts, er := p.client.Recv(context.Background(), p.receiveoptions)
+			if er != nil || evts == nil || len(evts.GetEvents()) == 0 {
+				log.Printf("nothing to receive (%v): %v\n", p.step, er)
+				return er
 			}
-			if er != nil {
-				log.Printf("error receiving message %v\n", er)
-				time.Sleep(time.Second)
-				break
+			for _, elm := range evts.GetEvents() {
+				p.messages <- elm
 			}
-			if elm == nil {
-				log.Println("nil element received")
-				time.Sleep(time.Second)
-				continue
-			}
-			p.messages <- elm
-		}
+			return nil
+		}, 25, time.Millisecond*100)
 	}
-	//  send request for receiveoptions.Count, then load them into <- messages
 	return nil
 }
 

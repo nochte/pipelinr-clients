@@ -10,6 +10,7 @@ import (
 	protomessages "github.com/nochte/pipelinr-protocol/protobuf/messages"
 	protopipes "github.com/nochte/pipelinr-protocol/protobuf/pipes"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 type Pipe struct {
@@ -27,6 +28,13 @@ func New(url, step, apikey string) *Pipe {
 	opts = append(opts, grpc.WithInsecure())
 
 	opts = append(opts, grpc.WithBlock())
+	opts = append(opts, grpc.WithUnaryInterceptor(
+		func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, handler grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+			ctx = metadata.AppendToOutgoingContext(ctx, "authorization", apikey)
+			handler(ctx, method, req, reply, cc, opts...)
+			return nil
+		}))
+
 	conn, err := grpc.Dial(url, opts...)
 	if err != nil {
 		log.Fatalf("fail to dial: %v", err)
@@ -51,7 +59,7 @@ func New(url, step, apikey string) *Pipe {
 
 	go func() {
 		for {
-			log.Printf("DEBUG Backlog %v\n", p.InQueue())
+			// log.Printf("DEBUG Backlog %v\n", p.InQueue())
 			time.Sleep(time.Second)
 		}
 	}()
@@ -100,6 +108,9 @@ func (p *Pipe) Send(msg *protomessages.MessageEnvelop) (string, error) {
 		xid, er := p.client.Send(context.Background(), msg)
 		if er != nil {
 			return er
+		}
+		if xid == nil || xid.GetXId() == "" {
+			return errors.New("did not complete send request")
 		}
 		id = xid.GetXId()
 		return nil

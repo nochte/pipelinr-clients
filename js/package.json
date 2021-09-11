@@ -1,0 +1,20 @@
+{
+  "name": "@pipelinr/clients",
+  "version": "1.0.0",
+  "description": "Used for interacting with pipelinr.dev",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --recursive -A"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/nochte/pipelinr-clients"
+  },
+  "author": "Nate Rowland <nate.rowland@hey.com>",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.4",
+    "lodash": "^4.17.21",
+    "mocha": "^9.1.1"
+  }
+}

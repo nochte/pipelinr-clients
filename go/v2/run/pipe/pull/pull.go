@@ -29,7 +29,7 @@ func main() {
 			receiver := pipes.New(url, "2", step, apikey)
 			receiver.SetReceiveOptions(&protopipes.ReceiveOptions{
 				AutoAck:           false,
-				Block:             true,
+				Block:             false,
 				Count:             10,
 				Timeout:           10,
 				Pipe:              step,

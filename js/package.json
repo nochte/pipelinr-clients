@@ -4,7 +4,10 @@
   "description": "Used for interacting with pipelinr.dev",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive -A"
+    "test": "mocha --recursive -A",
+    "worker:nodes": "node ./run/worker/nodes.js",
+    "worker:route": "node ./run/worker/route.js",
+    "worker:push": "node ./run/worker/pushwithtiming.js"
   },
   "repository": {
     "type": "git",

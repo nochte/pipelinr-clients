@@ -1,3 +1,4 @@
+const retry = require('../lib/retry');
 const sleep = require('../lib/sleep');
 const HTTPPipe = require('../pipe/http');
 
@@ -63,7 +64,10 @@ class Worker {
         } catch (er) {
           // console.log('threw an error on callback', er)
           keepon = false;
-          await this._pipe.log(msg.id.value, -1, `failed to complete handler ${i}, with error ${er}`);
+          await retry( async () => {
+            await this._pipe.log(msg.id.value, -1, `failed to complete handler ${i}, with error ${er}`);
+          }, 40, 250);
+          
           if (this._onError.length > 0) {
             shouldcomplete = false
           }
@@ -73,8 +77,16 @@ class Worker {
         }
       }
       if (shouldcomplete) {
-        await this._pipe.log(msg.id.value, 0, `completed step ${this._step}`);
-        await this._pipe.complete(msg.id.value);
+        try {
+          await retry( async () => {
+            await this._pipe.log(msg.id.value, 0, `completed step ${this._step}`);
+          }, 40, 250);
+          await retry( async () => {
+            await this._pipe.complete(msg.id.value);  
+          }, 40, 250);
+        } catch (er) {
+
+        }
       }
     }
   }

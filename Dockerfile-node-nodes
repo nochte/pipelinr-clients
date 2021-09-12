@@ -1,6 +1,6 @@
 FROM pipelinr-clients-node-base:latest AS build
 
-FROM FROM node:15.14.0-buster
+FROM node:15.14.0-buster
 COPY --from=build /etc/passwd /etc/passwd
 COPY --from=build /etc/group /etc/group
 COPY --from=build /go/bin/router /go/bin/router

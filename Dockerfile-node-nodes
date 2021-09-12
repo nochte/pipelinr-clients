@@ -7,7 +7,7 @@ COPY --from=build /etc/passwd /etc/passwd
 COPY --from=build /etc/group /etc/group
 USER appuser:appuser
 
-COPY --from=build . .
+COPY --from=build /app /app
 COPY ./js/run/worker/route.js /app/run/worker/nodes.js
 
 CMD ["npm", "run", "worker:nodes"]

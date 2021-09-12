@@ -1,0 +1,25 @@
+FROM node:15.14.0-buster
+
+
+
+RUN mkdir /app
+WORKDIR /app
+COPY ./js/package.json .
+
+RUN npm install
+
+# COPY ./js .
+COPY ./js/lib .
+COPY ./js/pipe .
+COPY ./js/worker .
+
+ENV USER=appuser
+ENV UID=10001 
+RUN adduser \    
+    --disabled-password \    
+    --gecos "" \    
+    --home "/nonexistent" \    
+    --shell "/sbin/nologin" \    
+    --no-create-home \    
+    --uid "${UID}" \    
+    "${USER}"

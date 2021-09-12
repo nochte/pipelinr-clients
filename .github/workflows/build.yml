@@ -95,14 +95,14 @@ jobs:
       -
         name: Build and push service image
         run: |
-          docker build -f ./Dockerfile-${{ matrix.server }} -t ghcr.io/${{ github.repository_owner }}/pipelinr-${{ matrix.server }}:${{ github.sha }} .
-          docker push ghcr.io/${{ github.repository_owner }}/pipelinr-${{ matrix.server }}:${{ github.sha }}
+          docker build -f ./Dockerfile-${{ matrix.server }} -t ghcr.io/${{ github.repository_owner }}/pipelinr-clients-${{ matrix.server }}:${{ github.sha }} .
+          docker push ghcr.io/${{ github.repository_owner }}/pipelinr-clients-${{ matrix.server }}:${{ github.sha }}
       -
         name: Tag and push image for master
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          docker tag ghcr.io/${{ github.repository_owner }}/pipelinr-${{ matrix.server }}:${{ github.sha }} ghcr.io/${{ github.repository_owner }}/pipelinr-${{ matrix.server }}:latest
-          docker push ghcr.io/${{ github.repository_owner }}/pipelinr-${{ matrix.server }}:latest
+          docker tag ghcr.io/${{ github.repository_owner }}/pipelinr-clients-${{ matrix.server }}:${{ github.sha }} ghcr.io/${{ github.repository_owner }}/pipelinr-${{ matrix.server }}:latest
+          docker push ghcr.io/${{ github.repository_owner }}/pipelinr-clients-${{ matrix.server }}:latest
       -
         name: Set image tag from branch
         id: imagetag
@@ -116,5 +116,5 @@ jobs:
           TAGNAME: "${{ steps.imagetag.outputs.tag }}"
         run: |
           env
-          docker tag ghcr.io/${{ github.repository_owner }}/pipelinr-${{ matrix.server }}:${{ github.sha }} ghcr.io/${{ github.repository_owner }}/pipelinr-${{ matrix.server }}:${{ env.TAGNAME }}
-          docker push ghcr.io/${{ github.repository_owner }}/pipelinr-${{ matrix.server }}:${{ env.TAGNAME }}
+          docker tag ghcr.io/${{ github.repository_owner }}/pipelinr-clients-${{ matrix.server }}:${{ github.sha }} ghcr.io/${{ github.repository_owner }}/pipelinr-clients-${{ matrix.server }}:${{ env.TAGNAME }}
+          docker push ghcr.io/${{ github.repository_owner }}/pipelinr-clients-${{ matrix.server }}:${{ env.TAGNAME }}

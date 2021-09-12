@@ -7,9 +7,9 @@ COPY ./js/package.json .
 RUN npm install
 
 # COPY ./js .
-COPY ./js/lib .
-COPY ./js/pipe .
-COPY ./js/worker .
+COPY ./js/lib ./lib
+COPY ./js/pipe ./pipe
+COPY ./js/worker ./worker
 
 ENV USER=appuser
 ENV UID=10001 

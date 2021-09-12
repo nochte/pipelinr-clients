@@ -10,4 +10,4 @@ USER appuser:appuser
 COPY --from=build . .
 COPY ./js/run/worker/route.js /app/run/worker/nodes.js
 
-ENTRYPOINT ["npm", "run", "worker:nodes"]
+CMD ["npm", "run", "worker:nodes"]

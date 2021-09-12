@@ -10,4 +10,4 @@ USER appuser:appuser
 COPY --from=build . .
 COPY ./js/run/worker/route.js /app/run/worker/pushwithtiming.js
 
-ENTRYPOINT ["npm", "run", "worker:push"]
+CMD ["npm", "run", "worker:push"]

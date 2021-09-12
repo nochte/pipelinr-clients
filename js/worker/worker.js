@@ -77,16 +77,12 @@ class Worker {
         }
       }
       if (shouldcomplete) {
-        try {
-          await retry( async () => {
-            await this._pipe.log(msg.id.value, 0, `completed step ${this._step}`);
-          }, 40, 250);
-          await retry( async () => {
-            await this._pipe.complete(msg.id.value);  
-          }, 40, 250);
-        } catch (er) {
-
-        }
+        await retry( async () => {
+          await this._pipe.log(msg.id.value, 0, `completed step ${this._step}`);
+        }, 40, 250);
+        await retry( async () => {
+          await this._pipe.complete(msg.id.value);  
+        }, 40, 250);
       }
     }
   }

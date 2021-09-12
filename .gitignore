@@ -23,3 +23,6 @@ graph-16k.txt
 local.env
 
 scratch
+
+js/node_modules
+*.env

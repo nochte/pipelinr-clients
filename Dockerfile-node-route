@@ -1,0 +1,10 @@
+FROM pipelinr-clients-node-base:latest AS build
+
+FROM node:15.14.0-buster
+COPY --from=build /etc/passwd /etc/passwd
+COPY --from=build /etc/group /etc/group
+USER appuser:appuser
+
+COPY ./js/run/worker/route.js ./run/worker/route.js
+
+ENTRYPOINT ["node", "/app/run/worker/route.js"]

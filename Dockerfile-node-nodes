@@ -7,4 +7,4 @@ USER appuser:appuser
 
 COPY ./js/run/worker/route.js ./run/worker/nodes.js
 
-ENTRYPOINT ["/app/run/worker/nodes.js"]
+ENTRYPOINT ["node", "/app/run/worker/nodes.js"]

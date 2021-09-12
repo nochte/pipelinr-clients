@@ -8,6 +8,6 @@ COPY --from=build /etc/group /etc/group
 USER appuser:appuser
 
 COPY --from=build /app /app
-COPY ./js/run/worker/route.js /app/run/worker/nodes.js
+COPY ./js/run/worker/nodes.js /app/run/worker/nodes.js
 
 CMD ["npm", "run", "worker:nodes"]

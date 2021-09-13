@@ -26,3 +26,4 @@ scratch
 
 js/node_modules
 *.env
+*.gem

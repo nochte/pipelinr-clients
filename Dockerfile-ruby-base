@@ -1,0 +1,22 @@
+FROM ruby:3.0.2-slim-buster
+
+RUN mkdir /app
+WORKDIR /app
+COPY ./ruby/Gemfile .
+
+RUN bundle install
+
+COPY ./ruby/lib ./lib
+COPY ./ruby/pipe ./pipe
+COPY ./ruby/worker ./worker
+
+ENV USER=appuser
+ENV UID=10001 
+RUN adduser \    
+    --disabled-password \    
+    --gecos "" \    
+    --home "/nonexistent" \    
+    --shell "/sbin/nologin" \    
+    --no-create-home \    
+    --uid "${UID}" \    
+    "${USER}"

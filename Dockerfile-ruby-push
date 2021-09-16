@@ -8,6 +8,6 @@ COPY --from=build /etc/group /etc/group
 USER appuser:appuser
 
 COPY --from=build /app /app
-COPY ./ruby/run/worker/pushwithtiming.rb /app/run/worker/pushwithtiming.rb
+COPY ./ruby/run/workers/pushwithtiming.rb /app/run/workers/pushwithtiming.rb
 
-CMD ["ruby", "/app/run/worker/pushwithtiming.rb"]
+CMD ["ruby", "/app/run/workers/pushwithtiming.rb"]

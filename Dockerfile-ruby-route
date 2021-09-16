@@ -8,6 +8,6 @@ COPY --from=build /etc/group /etc/group
 USER appuser:appuser
 
 COPY --from=build /app /app
-COPY ./ruby/run/worker/route.rb /app/run/worker/route.rb
+COPY ./ruby/run/workers/route.rb /app/run/workers/route.rb
 
-CMD ["ruby", "/app/run/worker/route.rb"]
+CMD ["ruby", "/app/run/workers/route.rb"]

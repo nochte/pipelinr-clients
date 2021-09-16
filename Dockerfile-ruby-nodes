@@ -8,6 +8,6 @@ COPY --from=build /etc/group /etc/group
 USER appuser:appuser
 
 COPY --from=build /app /app
-COPY ./ruby/run/worker/nodes.rb /app/run/worker/nodes.rb
+COPY ./ruby/run/workers/nodes.rb /app/run/workers/nodes.rb
 
-CMD ["ruby", "/app/run/worker/nodes.rb"]
+CMD ["ruby", "/app/run/workers/nodes.rb"]

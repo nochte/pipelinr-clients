@@ -5,6 +5,33 @@ on: push
 
 
 jobs:
+  build-base-ruby-image:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v1 
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      -
+        name: Build base ruby image
+        run: docker build -f ./Dockerfile-ruby-base -t ghcr.io/${{ github.repository_owner }}/pipelinr-clients-ruby-base:latest .
+      - name: Push base image
+        run: docker push ghcr.io/${{ github.repository_owner }}/pipelinr-clients-ruby-base:latest
+
   build-base-node-image:
     runs-on: ubuntu-latest
     steps:
@@ -64,11 +91,22 @@ jobs:
       matrix:
         # server: [grpc, http]
         # server: [http-server, db]
-        server: [go-push, go-nodes, go-route, node-push, node-nodes, node-route]
+        server: 
+          - go-push
+          - go-nodes
+          - go-route
+          - node-push
+          - node-nodes
+          - node-route
+          - ruby-push
+          - ruby-nodes
+          - ruby-route
+          
     # if: github.ref == 'refs/heads/master'
     needs:
       - build-base-golang-image
       - build-base-node-image
+      - build-base-ruby-image
     runs-on: ubuntu-latest
     steps:
       -
@@ -92,6 +130,8 @@ jobs:
           docker tag ghcr.io/${{ github.repository_owner }}/pipelinr-clients-go-base:latest pipelinr-clients-go-base:latest
           docker pull ghcr.io/${{ github.repository_owner }}/pipelinr-clients-node-base:latest
           docker tag ghcr.io/${{ github.repository_owner }}/pipelinr-clients-node-base:latest pipelinr-clients-node-base:latest
+          docker pull ghcr.io/${{ github.repository_owner }}/pipelinr-clients-ruby-base:latest
+          docker tag ghcr.io/${{ github.repository_owner }}/pipelinr-clients-ruby-base:latest pipelinr-clients-ruby-base:latest
       -
         name: Build and push service image
         run: |

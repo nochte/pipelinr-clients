@@ -14,6 +14,8 @@ import (
 	"github.com/nochte/pipelinr-lib/retry"
 )
 
+const WORKERS = 64
+
 func main() {
 	whichnodes := strings.Split(os.Getenv("NODES"), ",")
 	if len(whichnodes) == 0 || whichnodes[0] == "" {
@@ -32,11 +34,12 @@ func main() {
 			"node12",
 		}
 	}
-	for _, r := range whichnodes {
-		log.Printf("sleeping for a bit before starting %v\n", r)
-		time.Sleep(time.Second * 10)
-		startANode(r)
-		// workers = append(workers, )
+	for i := 0; i < WORKERS; i++ {
+		for _, r := range whichnodes {
+			log.Printf("sleeping for a bit before starting %v\n", r)
+			time.Sleep(time.Millisecond * 250)
+			startANode(r)
+		}
 	}
 
 	done := make(chan bool)
@@ -56,6 +59,13 @@ func startANode(name string) *worker.Worker {
 			os.Getenv("PIPELINR_API_KEY"),
 			name)
 	}
+	w.SetReceiveOptions(&protopipes.ReceiveOptions{
+		AutoAck:           false,
+		Block:             false,
+		Count:             5,
+		Timeout:           60,
+		RedeliveryTimeout: 60 * 10,
+	})
 
 	i := 0
 	w.OnMessage(func(msg *protomessages.Event) error {

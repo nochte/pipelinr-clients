@@ -6,10 +6,14 @@ import (
 	"strings"
 	"time"
 
+	protopipes "github.com/nochte/pipelinr-protocol/protobuf/pipes"
+
 	protomessages "github.com/nochte/pipelinr-protocol/protobuf/messages"
 
 	"github.com/nochte/pipelinr-clients/go/v2/worker"
 )
+
+const WORKERS = 64
 
 func main() {
 	file, er := os.Create("./graph.txt")
@@ -19,7 +23,7 @@ func main() {
 
 	out := make(chan string, 1000)
 
-	for i := 0; i < 20; i++ {
+	for i := 0; i < WORKERS; i++ {
 		var w *worker.Worker
 		if os.Getenv("GRPC") != "" {
 			w = worker.NewGRPCWorker(
@@ -32,6 +36,13 @@ func main() {
 				os.Getenv("PIPELINR_API_KEY"),
 				"graph")
 		}
+		w.SetReceiveOptions(&protopipes.ReceiveOptions{
+			AutoAck:           false,
+			Block:             false,
+			Count:             5,
+			Timeout:           60,
+			RedeliveryTimeout: 60 * 10,
+		})
 
 		w.OnMessage(func(msg *protomessages.Event) error {
 			// log.Printf("got a msg (%v): %v. %v\n", msg.GetStringId(), msg.GetMessage().GetRoute(), msg.GetMessage().GetRouteLog())

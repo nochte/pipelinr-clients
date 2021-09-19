@@ -84,14 +84,14 @@ func (p *Pipe) Start() error {
 		retry.Do(func() error {
 			evts, er := p.client.Recv(context.Background(), p.receiveoptions)
 			if er != nil || evts == nil || len(evts.GetEvents()) == 0 {
-				log.Printf("nothing to receive (%v): %v\n", p.step, er)
+				// log.Printf("nothing to receive (%v): %v\n", p.step, er)
 				return fmt.Errorf("nothing to receive (%v)", p.step)
 			}
 			for _, elm := range evts.GetEvents() {
 				p.messages <- elm
 			}
 			return nil
-		}, 40, time.Millisecond*250)
+		}, 240, time.Millisecond*250) // maximum wait of 1 minute
 	}
 	return nil
 }
@@ -108,9 +108,11 @@ func (p *Pipe) Send(msg *protomessages.MessageEnvelop) (string, error) {
 	er := retry.Do(func() error {
 		xid, er := p.client.Send(context.Background(), msg)
 		if er != nil {
+			log.Println("er", er)
 			return er
 		}
 		if xid == nil || xid.GetXId() == "" {
+			log.Println("er", er)
 			return errors.New("did not complete send request")
 		}
 		id = xid.GetXId()

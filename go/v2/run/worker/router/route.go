@@ -6,9 +6,12 @@ import (
 	"time"
 
 	protomessages "github.com/nochte/pipelinr-protocol/protobuf/messages"
+	protopipes "github.com/nochte/pipelinr-protocol/protobuf/pipes"
 
 	worker "github.com/nochte/pipelinr-clients/go/v2/worker"
 )
+
+const WORKERS = 64
 
 func main() {
 	ROUTES := []string{
@@ -26,7 +29,7 @@ func main() {
 		"node12",
 	}
 
-	for i := 0; i < 4; i++ {
+	for i := 0; i < WORKERS; i++ {
 		var router *worker.Worker
 		if os.Getenv("GRPC") != "" {
 			router = worker.NewGRPCWorker(
@@ -40,6 +43,16 @@ func main() {
 				"route")
 		}
 
+		router.SetReceiveOptions(&protopipes.ReceiveOptions{
+			AutoAck:           false,
+			Block:             false,
+			Count:             5,
+			Timeout:           60,
+			RedeliveryTimeout: 60 * 10,
+		})
+
+		rand.Seed(time.Now().UnixNano())
+
 		router.OnMessage(func(msg *protomessages.Event) error {
 			// log.Printf("handling %v\n", msg.GetStringId())
 			newroute := make([]string, 0)
@@ -48,6 +61,7 @@ func main() {
 					newroute = append(newroute, r)
 				}
 			}
+			rand.Shuffle(len(newroute), func(i, j int) { newroute[i], newroute[j] = newroute[j], newroute[i] })
 			newroute = append(newroute, "graph")
 			er := router.Pipe().AddSteps(msg.GetStringId(), newroute)
 			time.Sleep(time.Millisecond * 10)

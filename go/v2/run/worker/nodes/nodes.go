@@ -14,7 +14,7 @@ import (
 	"github.com/nochte/pipelinr-lib/retry"
 )
 
-const WORKERS = 64
+const WORKERS = 1
 
 func main() {
 	whichnodes := strings.Split(os.Getenv("NODES"), ",")

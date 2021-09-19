@@ -11,7 +11,7 @@ import (
 	worker "github.com/nochte/pipelinr-clients/go/v2/worker"
 )
 
-const WORKERS = 64
+const WORKERS = 1
 
 func main() {
 	ROUTES := []string{

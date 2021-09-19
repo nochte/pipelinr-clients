@@ -3,6 +3,7 @@ package pipes
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -84,13 +85,13 @@ func (p *Pipe) Start() error {
 			evts, er := p.client.Recv(context.Background(), p.receiveoptions)
 			if er != nil || evts == nil || len(evts.GetEvents()) == 0 {
 				log.Printf("nothing to receive (%v): %v\n", p.step, er)
-				return er
+				return fmt.Errorf("nothing to receive (%v)", p.step)
 			}
 			for _, elm := range evts.GetEvents() {
 				p.messages <- elm
 			}
 			return nil
-		}, 25, time.Millisecond*100)
+		}, 40, time.Millisecond*250)
 	}
 	return nil
 }

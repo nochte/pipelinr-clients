@@ -35,8 +35,9 @@ func main() {
 	}
 
 	wg := sync.WaitGroup{}
+	wg2 := sync.WaitGroup{}
 
-	numpipes := 500
+	numpipes := 50
 	outp := ring.New(numpipes)
 	for i := 0; i < numpipes; i++ {
 		if os.Getenv("GRPC") != "" {
@@ -51,6 +52,7 @@ func main() {
 	messages := make(chan *protomessages.MessageEnvelop, 10000)
 	sentchan := make(chan bool, 50)
 
+	wg2.Add(1)
 	go func() {
 		count := 1
 		st := time.Now()
@@ -60,6 +62,8 @@ func main() {
 				log.Printf("(%v) (%v) %v messages per sec \n", time.Since(st), count, float64(count)/float64(time.Since(st).Seconds()))
 			}
 		}
+		log.Printf("sentchan says we done with %v\n", count)
+		wg2.Done()
 	}()
 
 	go func() {
@@ -85,8 +89,10 @@ func main() {
 			Payload: fmt.Sprintf(`{"index":%v}`, i+persec),
 		}
 	}
-
 	close(messages)
 	wg.Wait()
+	<-time.After(time.Second * 5)
+
 	close(sentchan)
+	wg2.Wait()
 }

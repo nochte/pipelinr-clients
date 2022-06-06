@@ -37,6 +37,7 @@ class Worker {
 
   stop() {
     this._running = false;
+    this.pipe.stop();
   }
 
   async run() {

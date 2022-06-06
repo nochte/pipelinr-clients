@@ -119,6 +119,9 @@ class Pipe {
 
     const result = await retry(
       async () => {
+        if(!this._running) {
+          return [];
+        }
         const url = `/api/2/pipe/${this._receiveOptions.pipe}`;
         const res = await this._axios.get(url, {params: parms});
         return res.data.Events;
@@ -159,7 +162,7 @@ class Pipe {
 
   // next returns the next message, not returning until there is one available
   async next() {
-    while(true) {
+    while(this._running) {
       if (this._messages.length > 0) {
         return this._messages.shift();
       }

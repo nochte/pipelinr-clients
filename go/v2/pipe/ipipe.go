@@ -44,6 +44,8 @@ type Pipe interface {
 	// Decorate will decorate a message by id
 	Decorate(id string, decorations []*protopipes.Decoration) error
 
+	GetDecorations(id string, keys []string) ([]*protopipes.Decoration, error)
+
 	// Idle returns true if there are no messages queued in the pipe
 	Idle() bool
 }

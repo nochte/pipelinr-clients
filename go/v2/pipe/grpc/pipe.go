@@ -177,6 +177,17 @@ func (p *Pipe) Decorate(id string, decorations []*protopipes.Decoration) error {
 	return er
 }
 
+func (p *Pipe) GetDecorations(id string, keys []string) ([]*protopipes.Decoration, error) {
+	decs, er := p.client.GetDecorations(context.Background(), &protopipes.GetDecorationRequest{
+		XId:  id,
+		Keys: keys,
+	})
+	if er != nil {
+		return nil, er
+	}
+	return decs.GetDecorations(), nil
+}
+
 func (p *Pipe) Idle() bool {
 	return len(p.messages) == 0
 }

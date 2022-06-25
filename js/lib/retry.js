@@ -10,7 +10,9 @@ const retry = async (fn, retrycount = 10, retrybackoff = 1000) => {
         resolve(await fn());
         return; // separate lines, so that resolve the await fn will throw
       } catch (er) {
-        // console.log('error returned, retrying', er);
+        if(process.env.DEBUG) {
+          console.log('error returned, retrying', er);
+        }
         count += 1;
         if (count >= retrycount) {
           return reject(er);

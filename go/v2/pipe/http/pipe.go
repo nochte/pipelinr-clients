@@ -377,6 +377,30 @@ func (p *Pipe) Decorate(id string, decorations []*protopipes.Decoration) error {
 	return nil
 }
 
+func (p *Pipe) GetDecorations(id string, keys []string) ([]*protopipes.Decoration, error) {
+	u := fmt.Sprintf("%v/api/%v/message/%v/decorations?%v", p.urlbase, p.version, id, strings.Join(keys, ","))
+	response, er := p.getClient().Do(p.baseRequest("GET", u, ""))
+	if er != nil {
+		return nil, er
+	}
+
+	body, er := ioutil.ReadAll(response.Body)
+	defer response.Body.Close()
+	if er != nil {
+		log.Printf("error reading body %v\n", er)
+		return nil, er
+	}
+
+	var decs protopipes.Decorations
+	er = json.Unmarshal(body, &decs)
+	if er != nil {
+		log.Printf("error unmarshaling json %v\n", er)
+		return nil, er
+	}
+
+	return decs.GetDecorations(), nil
+}
+
 func (p *Pipe) Idle() bool {
 	return len(p.messages) == 0
 }

@@ -50,8 +50,8 @@ const bigWorkerTestMessageCount = 100;
       beforeEach(async () => {
         for (let i = 0; i < bigWorkerTestWorkersCount; i++) {
           const w = buildWorker(i);
-          w.onMessage(async (msg) => {
-            await w.pipe.decorate(msg.id, [
+          w.onMessage(async (msg, pipe) => {
+            await pipe.decorate(msg.id, [
               { Key: `worker-${w.step}`, Value: `"${i}"` },
             ]);
             processedMessages++;
@@ -106,8 +106,8 @@ const bigWorkerTestMessageCount = 100;
         let processedMessages = 0;
         beforeEach(async () => {
           const w = buildWorker(0);
-          w.onMessage(async (msg) => {
-            await w.pipe.decorate(msg.id, [
+          w.onMessage(async (msg, pipe) => {
+            await pipe.decorate(msg.id, [
               { Key: `worker-${w.step}`, Value: `"${0}"` },
             ]);
             processedMessages++;
@@ -163,8 +163,8 @@ const bigWorkerTestMessageCount = 100;
         let processedMessages = 0;
         beforeEach(async () => {
           const w = buildWorker(0);
-          w.onMessage(async (msg) => {
-            await w.pipe.decorate(msg.id, [
+          w.onMessage(async (msg, pipe) => {
+            await pipe.decorate(msg.id, [
               { Key: `worker-${w.step}`, Value: `"${0}"` },
             ]);
             throw new Error("app fail");
@@ -231,15 +231,15 @@ const bigWorkerTestMessageCount = 100;
             // timeout: 60,
             count: 10,
           }
-          w.onMessage(async (msg) => {
+          w.onMessage(async (msg, pipe) => {
             if(msg.message.decoratedPayload[`worker-${w.step}`]) {
-              await w.pipe.decorate(msg.id, [
+              await pipe.decorate(msg.id, [
                 {Key: `redelivered`, Value: `yep`}
               ]);
               return true
 
             }
-            await w.pipe.decorate(msg.id, [
+            await pipe.decorate(msg.id, [
               { Key: `worker-${w.step}`, Value: `"${0}"` },
             ]);
             throw new Error("app fail");

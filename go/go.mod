@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/nochte/pipelinr-lib v0.0.0-20210824021320-549fe0445b69
-	github.com/nochte/pipelinr-protocol v1.1.2
+	github.com/nochte/pipelinr-protocol v1.2.0
 	github.com/smartystreets/goconvey v1.6.4
 	google.golang.org/grpc v1.35.0
 )

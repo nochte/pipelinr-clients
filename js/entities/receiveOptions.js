@@ -19,6 +19,15 @@ class ReceiveOptions {
   get autoAck() {
     return this.#props.autoAck;
   }
+  get excludeRouting() {
+    return this.#props.excludeRouting;
+  }
+  get excludeRouteLog() {
+    return this.#props.excludeRouteLog;
+  }
+  get excludeDecoratedPayload() {
+    return this.#props.excludeDecoratedPayload;
+  }
   get block() {
     return this.#props.block;
   }
@@ -38,6 +47,9 @@ class ReceiveOptions {
     recvopts.setAutoack(this.autoAck);
     recvopts.setBlock(this.block);
     recvopts.setCount(this.count);
+    recvopts.setExcluderouting(this.excludeRouting);
+    recvopts.setExcluderoutelog(this.excludeRouteLog);
+    recvopts.setExcludedecoratedpayload(this.excludeDecoratedPayload);
     if(this.timeout) {
       recvopts.setTimeout(this.timeout);
     } else {
@@ -58,6 +70,9 @@ class ReceiveOptions {
     recvopts.count = this.count ? this.count : 1;
     recvopts.timeout = this.timeout ? this.timeount : 60
     recvopts.redeliveryTimeout = this.redeliveryTimeout;
+    recvopts.excludeRouting = this.excludeRouting ? 'yes' : null;
+    recvopts.excludeRouteLog = this.excludeRouteLog ? 'yes' : null;
+    recvopts.excludeDecoratedPayload = this.excludeDecoratedPayload ? 'yes' : null;
 
     return _.omitBy(recvopts, _.isNil);
   }

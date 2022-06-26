@@ -36,7 +36,7 @@ class Worker {
     return this.name;
   }
 
-  // onMessage takes an async callback that takes parameters (event)
+  // onMessage takes an async callback that takes parameters (event, pipe), where pipe is the originator of the event
   //  if the callback throws an error, then the onError chain is called
   //  if there is no onError chain, then the message is completed automatically
   //  if there is an onError chain, then the message is *not* completed nor acknowledged automatically
@@ -44,7 +44,7 @@ class Worker {
     this.#onMessage.push(fn);
   }
 
-  // onError takes a callback that takes parameters (error, event)
+  // onError takes a callback that takes parameters (error, event, pipe), where pipe is the originator of the event
   //  if the message should be completed or acknowledged, then the onError callback should do taht work
   onError(fn) {
     this.#onError.push(fn);
@@ -77,7 +77,7 @@ class Worker {
         }
 
         try {
-          await fn(msg);
+          await fn(msg, this.#pipe);
         } catch(er) {
           keepon = false;
           await retry(async () => {
@@ -88,7 +88,7 @@ class Worker {
             shouldcomplete = false;
           }
           for(let j = 0; j < this.#onError.length; j++) {
-            await this.#onError[j](er, msg);
+            await this.#onError[j](er, msg, this.#pipe);
           }
         }
       }

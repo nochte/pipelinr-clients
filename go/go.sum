@@ -386,6 +386,8 @@ github.com/nochte/pipelinr-lib v0.0.0-20210824021320-549fe0445b69 h1:qVSwYLJcE9a
 github.com/nochte/pipelinr-lib v0.0.0-20210824021320-549fe0445b69/go.mod h1:V1nGBdGv1b/MOKeKwNHUBh5x65J6PY/17G+h/6zDtcM=
 github.com/nochte/pipelinr-protocol v1.1.2 h1:YepxHN5r6sL06dqxpHfQzhiNTa+H3aQjLss/bTp8M/I=
 github.com/nochte/pipelinr-protocol v1.1.2/go.mod h1:M7V6uvFLmepGR4E3/zkIlQZi5gxZPKgSIobCpZVLvMA=
+github.com/nochte/pipelinr-protocol v1.2.0 h1:2XRfKlq4rkeuep0lYyJmewNQoRUXcNNFwM5SXacJuco=
+github.com/nochte/pipelinr-protocol v1.2.0/go.mod h1:M7V6uvFLmepGR4E3/zkIlQZi5gxZPKgSIobCpZVLvMA=
 github.com/nrdcg/auroradns v1.0.0/go.mod h1:6JPXKzIRzZzMqtTDgueIhTi6rFf1QvYE/HzqidhOhjw=
 github.com/nrdcg/dnspod-go v0.4.0/go.mod h1:vZSoFSFeQVm2gWLMkyX61LZ8HI3BaqtHZWgPTGKr6KQ=
 github.com/nrdcg/goinwx v0.6.1/go.mod h1:XPiut7enlbEdntAqalBIqcYcTEVhpv/dKWgDCX2SwKQ=

@@ -31,6 +31,9 @@ class Pipe {
       pipe: step,
       autoAck: false,
       block: false,
+      excludeRouting: false,
+      excludeRouteLog: false,
+      excludeDecoratedPayload: false,
       count: 1,
       timeout: 0,
       redeliveryTimeout: 0
@@ -53,15 +56,18 @@ class Pipe {
     this.#running = false;
   }
 
-  set receiveOptions({autoAck, block, count, timeout, redeliveryTimeout}) {
+  set receiveOptions({autoAck, block, count, timeout, redeliveryTimeout, excludeRouting, excludeRouteLog, excludeDecoratedPayload}) {
     const oldro = this.#receiveOptions;
     autoAck = _.isNil(autoAck) ? oldro.autoAck : autoAck;
     block = _.isNil(block) ? oldro.block : block;
+    excludeRouting = _.isNil(excludeRouting) ? oldro.excludeRouting : excludeRouting;
+    excludeRouteLog = _.isNil(excludeRouteLog) ? oldro.excludeRouteLog : excludeRouteLog;
+    excludeDecoratedPayload = _.isNil(excludeDecoratedPayload) ? oldro.excludeDecoratedPayload : excludeDecoratedPayload;
     count = _.isNil(count) ? oldro.count : count;
     timeout = _.isNil(timeout) ? oldro.timeout : timeout;
     redeliveryTimeout = _.isNil(redeliveryTimeout) ? oldro.redeliveryTimeout : redeliveryTimeout;
 
-    const opts = {autoAck, block, count, timeout, redeliveryTimeout, pipe: this.step};
+    const opts = {autoAck, block, count, timeout, redeliveryTimeout, pipe: this.step, excludeRouting, excludeRouteLog, excludeDecoratedPayload};
     this.#receiveOptions = new ReceiveOptions(opts);
   }
 

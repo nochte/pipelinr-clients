@@ -41,21 +41,21 @@ class MessageEnvelop {
 
 const fromHTTPFormat = ({Payload, Route, CompletedSteps, RouteLog, DecoratedPayload}) => {
   return new MessageEnvelop({
-    Payload,
-    Route,
+    Payload: (Payload || "{}"),
+    Route: (Route || []),
     CompletedSteps: (CompletedSteps || []),
     RouteLog: (RouteLog || []).map(routeLog.fromHTTPFormat),
-    DecoratedPayload
+    DecoratedPayload: (DecoratedPayload || "{}")
   });
 }
 
 const fromGRPCFormat = ({payload, routeList, completedstepsList, routelogList, decoratedpayload}) => {
   return new MessageEnvelop({
-    Payload: payload, 
-    Route: routeList, 
+    Payload: (payload || "{}"), 
+    Route: (routeList || []), 
     CompletedSteps: (completedstepsList || []), 
     RouteLog: (routelogList || []).map(routeLog.fromGRPCFormat), 
-    DecoratedPayload: decoratedpayload,
+    DecoratedPayload: (decoratedpayload || "{}"),
   });
 }
 

@@ -109,6 +109,35 @@ const pipecount = 3;
           const completeres = await pipe.complete(id);
           expect(completeres).eq(true);
         });
+
+        it('should omit fields when configured to', async () => {
+          pipe.receiveOptions = {
+            excludeRouting: true,
+            excludeRouteLog: true,
+            excludeDecoratedPayload: true,
+          }
+
+          const id = await pipe.send({
+            Payload: JSON.stringify({foo: 'bar'}),
+            Route: [pipename, 'some', 'route'],
+          });
+
+          expect(id).not.eq('');
+          expect(typeof id).eq('string');
+
+          expect(await pipe.decorate(id, [
+            {Key: 'somekey', Value: 'somevalue'},
+            {Key: 'otherkey', Value: 'otherval'}
+          ])).deep.eq([true, true]);
+
+          const elms = await pipe.fetch();
+          expect(elms.length).eq(1);
+          const elm = elms[0];
+          expect(elm.id).eq(id);
+          expect(elm.message.route).deep.eq([])
+          expect(elm.message.decoratedPayload).deep.eq({});
+          expect(elm.message.routeLog).deep.eq([]);
+        });
       });
     });
 

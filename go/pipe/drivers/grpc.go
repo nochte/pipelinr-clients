@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"os"
 
 	"github.com/nochte/pipelinr-protocol/protobuf/messages"
 	"github.com/nochte/pipelinr-protocol/protobuf/pipes"
@@ -16,6 +17,16 @@ type GRPCDriver struct {
 }
 
 func NewGRPCDriver(url, apikey string) *GRPCDriver {
+	if url == "" {
+		url = os.Getenv("PIPELINR_GRPC_URL")
+	}
+	if url == "" {
+		url = "grpc.pipelinr.dev:80"
+	}
+	if apikey == "" {
+		apikey = os.Getenv("PIPELINR_API_KEY")
+	}
+
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithInsecure())
 
@@ -133,5 +144,13 @@ func (d GRPCDriver) GetDecorations(id string, keys []string) ([]*pipes.Decoratio
 	if er != nil {
 		return nil, er
 	}
-	return decs.GetDecorations(), nil
+	out := make([]*pipes.Decoration, len(decs.GetDecorations()))
+	for ndx := range decs.GetDecorations() {
+		if decs.GetDecorations()[ndx].GetValue() != "" {
+			out[ndx] = decs.GetDecorations()[ndx]
+		} else {
+			out[ndx] = nil
+		}
+	}
+	return out, nil
 }

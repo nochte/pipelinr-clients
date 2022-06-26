@@ -145,7 +145,7 @@ const HTTP = require('../../pipe/drivers/http');
             await driver.complete(event.id, 'after');
           });
         });
-        describe.only('decorate', () => {
+        describe('decorate', () => {
           it('should decorate the payload', async () => {
             const res = await driver.decorate(event.id, new Decorations(
               [

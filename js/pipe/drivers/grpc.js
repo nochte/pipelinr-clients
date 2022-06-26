@@ -169,7 +169,7 @@ class Driver {
         return resolve(
           _.merge(
             ...ob.decorationsList.map(({key, value}) => {
-              return dot.object({[key]: JSON.parse(value)});
+              return dot.object({[key]: value ? JSON.parse(value) : null});
             })
         ));
       })

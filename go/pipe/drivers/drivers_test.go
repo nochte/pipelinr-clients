@@ -2,7 +2,6 @@ package drivers
 
 import (
 	"encoding/json"
-	"os"
 	"testing"
 
 	"github.com/nochte/pipelinr-clients/go/lib"
@@ -18,8 +17,12 @@ func TestDriver(t *testing.T) {
 		}
 		for _, td := range []TestDefinition{
 			{name: "grpc driver", getdriver: func() Driver {
-				return NewGRPCDriver(os.Getenv("PIPELINR_GRPC_URL"), os.Getenv("PIPELINR_API_KEY"))
-			}}} {
+				return NewGRPCDriver("", "")
+			}},
+			{name: "http driver", getdriver: func() Driver {
+				return NewHTTPDriver("", "")
+			}},
+		} {
 			Convey(td.name, func() {
 				driver := td.getdriver()
 
@@ -141,7 +144,7 @@ func TestDriver(t *testing.T) {
 							So(er, ShouldBeNil)
 							So(len(decs), ShouldEqual, 3)
 							So(decs[0].GetValue(), ShouldEqual, `"bar"`)
-							So(decs[1].GetValue(), ShouldBeNil, nil)
+							So(decs[1], ShouldBeNil)
 							So(decs[2].GetValue(), ShouldEqual, `"fleeeep"`)
 						})
 					})

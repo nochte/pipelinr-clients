@@ -93,8 +93,11 @@ class Driver {
   async getDecorations(id, keys) {
     const result = await this.#client.get(`/api/2/message/${id}/decorations`, {params: { keys: keys.join(',') }});
     return _.merge(
-      ...result.data.Decorations.map(({Key, Value}) => {
-        return dot.object({[Key]: JSON.parse(Value)});
+      ...result.data.Decorations.map((dec) => {
+        if(dec) { 
+          const {Key, Value} = dec;
+          return dot.object({[Key]: JSON.parse(Value)});
+        }
       })
     );
   }

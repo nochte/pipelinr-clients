@@ -85,13 +85,8 @@ const HTTP = require('../../pipe/drivers/http');
             expect(await driver.ack(event.id, route[0])).eq(true);
             expect(await driver.ack(event.id, route[0])).eq(true);
           });
-          it('should throw error on a message not found', async () => {
-            try {
-              await driver.ack('badid', route[0]);
-              expect(1).eq(2);
-            } catch (er) {
-              expect(1).eq(1);
-            }
+          it('should return true on bad id', async () => {
+            expect(await driver.ack('badid', route[0])).eq(true);
           });
         });
         describe('complete', () => {
@@ -150,7 +145,7 @@ const HTTP = require('../../pipe/drivers/http');
             await driver.complete(event.id, 'after');
           });
         });
-        describe('decorate', () => {
+        describe.only('decorate', () => {
           it('should decorate the payload', async () => {
             const res = await driver.decorate(event.id, new Decorations(
               [
@@ -172,6 +167,11 @@ const HTTP = require('../../pipe/drivers/http');
   
             expect(msg.message.decoratedPayload.foo).eq('bar');
             expect(msg.message.decoratedPayload.flip).eq('fleeeep');  
+
+            const decs = await driver.getDecorations(event.id, ['foo', 'bar', 'flip']);
+            expect(decs.foo).eq('bar');
+            expect(decs.flip).eq('fleeeep');
+            expect(decs.bar).eq(undefined);
           });
         });  
       });

@@ -48,7 +48,7 @@ const workBuffer = async () => {
 
 const go = async () => {
   const timetosleep = 1000/persec;
-  for(let i = 0; count == 0 || i < count; i++) {
+  for(let i = 0; count === 0 || i < count; i++) {
     buffer.push({
       Route:   ['route'],
       Payload: `{"index":${i}}`,

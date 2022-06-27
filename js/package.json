@@ -4,7 +4,7 @@
   "description": "Used for interacting with pipelinr.dev",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive -A",
+    "test": "mocha --inspect -t 18000000 --recursive",
     "worker:nodes": "node ./run/worker/nodes.js",
     "worker:route": "node ./run/worker/route.js",
     "worker:push": "node ./run/worker/pushwithtiming.js",
@@ -21,15 +21,22 @@
   "author": "Nate Rowland <rowland.nate@hey.com>",
   "license": "ISC",
   "dependencies": {
+    "@grpc/grpc-js": "1.1.8",
+    "@grpc/proto-loader": "0.5.5",
+    "@pipelinr/protocol": "^1.2.0",
     "axios": "^0.21.4",
-    "lodash": "^4.17.21",
-    "mocha": "^9.1.1"
+    "dot-object": "^2.1.4",
+    "google-protobuf": "3.13.0",
+    "lodash": "^4.17.21"
   },
   "directories": {
     "lib": "lib",
     "test": "test"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "mocha": "^10.0.0"
+  },
   "keywords": [
     "pipelinr"
   ]

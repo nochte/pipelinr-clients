@@ -36,7 +36,7 @@ class Pipe {
       excludeDecoratedPayload: false,
       count: 1,
       timeout: 0,
-      redeliveryTimeout: 0
+      redeliveryTimeout: 60
     };
     this.retryPolicy = {attemptCount: 10, backoffMs: 250};
     this.#debugMode = debugMode;

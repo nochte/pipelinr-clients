@@ -29,3 +29,5 @@ js/node_modules
 *.gem
 
 js/.npmrc
+
+*.log

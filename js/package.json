@@ -1,6 +1,6 @@
 {
   "name": "@pipelinr/clients",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Used for interacting with pipelinr.dev",
   "main": "index.js",
   "scripts": {

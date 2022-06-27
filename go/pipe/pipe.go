@@ -263,6 +263,9 @@ func (p *Pipe) Start(maxmessages int) error {
 }
 
 // Chan returns the internal p.messages chan, such that the caller is able to process messages in sequence
-func (p Pipe) Chan() chan *messages.Event {
+func (p *Pipe) Chan() chan *messages.Event {
+	for p.messages == nil {
+		time.Sleep(time.Millisecond * 10)
+	}
 	return p.messages
 }
